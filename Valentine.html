@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Will you be my Valentine?</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff9a9e, #fecfef);
+      font-family: "Segoe UI", system-ui, sans-serif;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #fff;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+      position: relative;
+    }
+
+    button {
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s;
+    }
+
+    #yesBtn {
+      background: #ff4b6e;
+      color: #fff;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+    }
+
+    #yesBtn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      background: #ff2f59;
+    }
+
+    #noBtn {
+      background: #ffffff;
+      color: #ff4b6e;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      position: absolute;
+    }
+
+    #countdown {
+      font-size: 1.5rem;
+      color: white;
+      margin-top: 20px;
+      display: none;
+    }
+
+    #videoContainer {
+      margin-top: 30px;
+      display: none;
+      text-align: center;
+    }
+
+    #videoContainer p {
+      color: #fff;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    iframe {
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      color: #ff2f59;
+      font-size: 24px;
+      animation: floatUp 4s linear forwards;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-600px) scale(1.8); opacity: 0; }
+    }
+
+    /* Floating roses */
+    .rose {
+      position: fixed;
+      bottom: -20px;
+      font-size: 28px;
+      animation: floatRose 5s linear forwards;
+    }
+
+    @keyframes floatRose {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-650px) rotate(360deg); opacity: 0; }
+    }
+
+    /* Blooming rose */
+    #bloomRose {
+      font-size: 80px;
+      position: fixed;
+      bottom: 20px;
+      opacity: 0;
+      animation: bloom 3s ease forwards;
+      display: none;
+    }
+
+    @keyframes bloom {
+      0% { transform: scale(0.1); opacity: 0; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Glowing text */
+    #glowText {
+      font-size: 2rem;
+      color: white;
+      margin-top: 20px;
+      opacity: 0;
+      text-shadow: 0 0 10px #fff, 0 0 20px #ff4b6e, 0 0 30px #ff4b6e;
+      animation: glow 3s ease forwards;
+      display: none;
+    }
+
+    @keyframes glow {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7b4e2f1c8d.mp3?filename=romantic-piano-ambient-110397.mp3" type="audio/mpeg">
+  </audio>
+
+  <h1>Arushi, will you be my Valentine? 💖</h1>
+
+  <div class="buttons">
+    <button id="yesBtn">Yes</button>
+    <button id="noBtn">No</button>
+  </div>
+
+  <div id="countdown">Starting in 10...</div>
+
+  <div id="bloomRose">🌹</div>
+  <div id="glowText">Arushi ❤️ Rahul</div>
+
+  <div id="videoContainer">
+    <p>Yay Arushi! This is for you 💕</p>
+    <iframe id="danceVideo" width="360" height="215"
+      src="https://www.youtube.com/embed/BddP6PYo2gs?autoplay=1"
+      title="Love Song"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const countdown = document.getElementById("countdown");
+    const videoContainer = document.getElementById("videoContainer");
+    const bloomRose = document.getElementById("bloomRose");
+    const glowText = document.getElementById("glowText");
+    const bgMusic = document.getElementById("bgMusic");
+
+    function setInitialNoPosition() {
+      const rect = yesBtn.getBoundingClientRect();
+      noBtn.style.left = rect.width + 40 + "px";
+      noBtn.style.top = "0px";
+    }
+
+    setInitialNoPosition();
+    window.addEventListener("resize", setInitialNoPosition);
+
+    noBtn.addEventListener("mouseover", () => {
+      const padding = 40;
+      const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+      const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
+
+      noBtn.style.left = randomX + "px";
+      noBtn.style.top = randomY + "px";
+    });
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 4000);
+    }
+
+    function createRose() {
+      const rose = document.createElement("div");
+      rose.classList.add("rose");
+      rose.innerHTML = "🌹";
+      rose.style.left = Math.random() * window.innerWidth + "px";
+      document.body.appendChild(rose);
+      setTimeout(() => rose.remove(), 5000);
+    }
+
+    yesBtn.addEventListener("click", () => {
+      countdown.style.display = "block";
+      bgMusic.play();
+
+      let timeLeft = 10;
+      countdown.textContent = "Starting in " + timeLeft + "...";
+
+      const timer = setInterval(() => {
+        timeLeft--;
+        countdown.textContent = "Starting in " + timeLeft + "...";
+
+        createHeart();
+        createRose();
+
+        if (timeLeft === 0) {
+          clearInterval(timer);
+          countdown.style.display = "none";
+
+          bloomRose.style.display = "block";
+          glowText.style.display = "block";
+
+          setTimeout(() => {
+            videoContainer.style.display = "block";
+            videoContainer.scrollIntoView({ behavior: "smooth" });
+          }, 3000);
+        }
+      }, 1000);
+    });
+  </script>
+
+</body>
+</html>
