@@ -140,6 +140,25 @@
       0% { opacity: 0; transform: scale(0.8); }
       100% { opacity: 1; transform: scale(1); }
     }
+
+    /* Popup image */
+    #popupImage {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 280px;
+      height: auto;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.4);
+      animation: fadeIn 2s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translate(-50%, -40%); }
+      100% { opacity: 1; transform: translate(-50%, -50%); }
+    }
   </style>
 </head>
 <body>
@@ -160,6 +179,9 @@
   <div id="bloomRose">🌹</div>
   <div id="glowText">Arushi ❤️ Rahul</div>
 
+  <!-- Popup image -->
+  <img id="popupImage" src="yourimage.jpg" alt="Popup">
+
   <div id="videoContainer">
     <p>Yay Arushi! This is for you 💕</p>
     <iframe id="danceVideo" width="360" height="215"
@@ -178,6 +200,7 @@
     const videoContainer = document.getElementById("videoContainer");
     const bloomRose = document.getElementById("bloomRose");
     const glowText = document.getElementById("glowText");
+    const popupImage = document.getElementById("popupImage");
     const bgMusic = document.getElementById("bgMusic");
 
     function setInitialNoPosition() {
@@ -239,6 +262,7 @@
 
           bloomRose.style.display = "block";
           glowText.style.display = "block";
+          popupImage.style.display = "block";
 
           setTimeout(() => {
             videoContainer.style.display = "block";
